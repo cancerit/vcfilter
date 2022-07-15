@@ -1,0 +1,5 @@
+
+  vcfriend get [VCF]
+
+ Given a vcf file, prints basic filterable (FILTER, INFO, and FORMAT) items. Redirect to file with > if desired.
+
