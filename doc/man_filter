@@ -1,0 +1,29 @@
+
+  vcfriend filter [OPTIONS...] [FILTER_CONFIG] [VCF...]
+
+ Given one or more VCF files, filter on the expression provided by FILTER_CONFIG file.
+ User-friendly wrapper around bcftools filter - for more advanced filtering needs go direct!
+
+ OPTIONS
+
+            -e  filter exclusively, i.e. exclude items that match FILTER_CONFIG
+            
+            -i  filter inclusively, i.e. include only items that match FILTER_CONFIG
+            
+            -f [STRING]  append string to VCF/s to be filtered. May only contain alphanumerics, "." and "_". Defaults to 'filter'
+            
+            -h, help  show help
+            
+            -o [PATH]  output directory. Defaults to current directory
+           
+            -q  suppress messages
+            
+            -s [STRING]  soft filter. Instead of excluding/including entries which do not satisfy expression, change their FILTER flags to [STRING]
+            
+FILTER_CONFIG
+            
+            This file should contain a bcftools logical expression on a single line, and in single quotes, e.g.: 'CLPM=0 & DP>10'.
+            The filter will then attempt to filter the provided VCFs by this logic, presuming the tokens used are present in the VCF header.
+            For help on constructing appropriate filtering expressions see https://samtools.github.io/bcftools/howtos/filtering.html, or man bcftools.
+            To see available filterables for a given VCF, use vcfriend get.
+    

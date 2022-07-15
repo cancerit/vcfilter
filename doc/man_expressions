@@ -1,0 +1,196 @@
+EXPRESSIONS - from man bcftools
+
+Valid expressions may contain:
+numerical constants, string constants, file names (this is currently supported only to filter by the ID column)
+
+1, 1.0, 1e-4
+"String"
+@file_name
+
+
+arithmetic operators
+
++,*,-,/
+
+
+comparison operators
+
+== (same as =), >, >=, <=, <, !=
+
+
+regex operators "\~" and its negation "!~". The expressions are case sensitive unless "/i" is added.
+
+INFO/HAYSTACK ~ "needle"
+INFO/HAYSTACK ~ "NEEDless/i"
+
+
+parentheses
+
+(, )
+
+
+logical operators. See also the examples below and the filtering tutorial about the distinction between "&&" vs "&" and "||" vs "|".
+
+&&,  &, ||,  |
+
+
+INFO tags, FORMAT tags, column names
+
+INFO/DP or DP
+FORMAT/DV, FMT/DV, or DV
+FILTER, QUAL, ID, CHROM, POS, REF, ALT[0]
+
+
+starting with 1.11, the FILTER column can be queried as follows:
+
+FILTER="PASS"
+FILTER="A"          .. exact match, for example "A;B" does not pass
+FILTER!="A"         .. exact match, for example "A;B" does pass
+FILTER~"A"          .. both "A" and "A;B" pass
+FILTER!~"A"         .. neither "A" nor "A;B" pass
+1 (or 0) to test the presence (or absence) of a flag
+
+
+FlagA=1 && FlagB=0
+
+"." to test missing values
+
+DP=".", DP!=".", ALT="."
+
+
+missing genotypes can be matched regardless of phase and ploidy (".|.", "./.", ".", "0|.") using these expressions
+
+GT="mis", GT~"\.", GT!~"\."
+
+
+missing genotypes can be matched including the phase and ploidy (".|.", "./.", ".") using these expressions
+
+GT=".|.", GT="./.", GT="."
+
+
+sample genotype: reference (haploid or diploid), alternate (hom or het, haploid or diploid), missing genotype, homozygous, heterozygous, haploid, ref-ref hom, alt-alt hom, ref-alt het, alt-alt het, haploid ref, haploid alt (case-insensitive)
+
+GT="ref"
+GT="alt"
+GT="mis"
+GT="hom"
+GT="het"
+GT="hap"
+GT="RR"
+GT="AA"
+GT="RA" or GT="AR"
+GT="Aa" or GT="aA"
+GT="R"
+GT="A"
+
+
+TYPE for variant type in REF,ALT columns (indel,snp,mnp,ref,bnd,other,overlap). Use the regex operator "\~" to require at least one allele of the given type or the equal sign "=" to require that all alleles are of the given type. Compare
+
+TYPE="snp"
+TYPE~"snp"
+TYPE!="snp"
+TYPE!~"snp"
+
+
+array subscripts (0-based), "*" for any element, "-" to indicate a range. Note that for querying FORMAT vectors, the colon ":" can be used to select a sample and an element of the vector, as shown in the examples below
+
+INFO/AF[0] > 0.3             .. first AF value bigger than 0.3
+FORMAT/AD[0:0] > 30          .. first AD value of the first sample bigger than 30
+FORMAT/AD[0:1]               .. first sample, second AD value
+FORMAT/AD[1:0]               .. second sample, first AD value
+DP4[*] == 0                  .. any DP4 value
+FORMAT/DP[0]   > 30          .. DP of the first sample bigger than 30
+FORMAT/DP[1-3] > 10          .. samples 2-4
+FORMAT/DP[1-]  < 7           .. all samples but the first
+FORMAT/DP[0,2-4] > 20        .. samples 1, 3-5
+FORMAT/AD[0:1]               .. first sample, second AD field
+FORMAT/AD[0:*], AD[0:] or AD[0] .. first sample, any AD field
+FORMAT/AD[*:1] or AD[:1]        .. any sample, second AD field
+(DP4[0]+DP4[1])/(DP4[2]+DP4[3]) > 0.3
+CSQ[*] ~ "missense_variant.*deleterious"
+
+
+with many samples it can be more practical to provide a file with sample names, one sample name per line
+
+GT[@samples.txt]="het" & binom(AD)<0.01
+
+
+function on FORMAT tags (over samples) and INFO tags (over vector fields): maximum; minimum; arithmetic mean (AVG is synonymous with MEAN); median; standard deviation from mean; sum; string length; absolute value; number of elements:
+
+MAX, MIN, AVG, MEAN, MEDIAN, STDEV, SUM, STRLEN, ABS, COUNT
+
+Note that functions above evaluate to a single value across all samples and are intended to select sites, not samples, even when applied on FORMAT tags. However, when prefixed with SMPL_ (or "s" for brevity, e.g. SMPL_MAX or sMAX), they will evaluate to a vector of per-sample values when applied on FORMAT tags:
+
+SMPL_MAX, SMPL_MIN, SMPL_AVG, SMPL_MEAN, SMPL_MEDIAN, SMPL_STDEV, SMPL_SUM,
+sMAX, sMIN, sAVG, sMEAN, sMEDIAN, sSTDEV, sSUM
+
+
+two-tailed binomial test. Note that for N=0 the test evaluates to a missing value and when FORMAT/GT is used to determine the vector indices, it evaluates to 1 for homozygous genotypes.
+
+binom(FMT/AD)                .. GT can be used to determine the correct index
+binom(AD[0],AD[1])           .. or the fields can be given explicitly
+phred(binom())               .. the same as binom but phred-scaled
+
+
+variables calculated on the fly if not present: number of alternate alleles; number of samples; count of alternate alleles; minor allele count (similar to AC but is always smaller than 0.5); frequency of alternate alleles (AF=AC/AN); frequency of minor alleles (MAF=MAC/AN); number of alleles in called genotypes; number of samples with missing genotype; fraction of samples with missing genotype; indel length (deletions negative, insertions positive)
+
+N_ALT, N_SAMPLES, AC, MAC, AF, MAF, AN, N_MISSING, F_MISSING, ILEN
+
+the number (N_PASS) or fraction (F_PASS) of samples which pass the expression
+
+N_PASS(GQ>90 & GT!="mis") > 90
+F_PASS(GQ>90 & GT!="mis") > 0.9
+
+
+custom perl filtering. Note that this command is not compiled in by default, see the section Optional Compilation with Perl in the INSTALL file for help and misc/demo-flt.pl for a working example. The demo defined the perl subroutine "severity" which can be invoked from the command line as follows:
+
+perl:path/to/script.pl; perl.severity(INFO/CSQ) > 3
+
+
+Notes:
+String comparisons and regular expressions are case-insensitive
+
+Comma in strings is interpreted as a separator and when multiple values are compared, the OR logic is used. Consequently, the following two expressions are equivalent but not the third:
+
+-i 'TAG="hello,world"'
+-i 'TAG="hello" || TAG="world"'
+-i 'TAG="hello" && TAG="world"'
+
+Variables and function names are case-insensitive, but not tag names. For example, "qual" can be used instead of "QUAL", "strlen()" instead of "STRLEN()" , but not "dp" instead of "DP".
+
+When querying multiple values, all elements are tested and the OR logic is used on the result. For example, when querying "TAG=1,2,3,4", it will be evaluated as follows:
+
+-i 'TAG[*]=1'   .. true, the record will be printed
+-i 'TAG[*]!=1'  .. true
+-e 'TAG[*]=1'   .. false, the record will be discarded
+-e 'TAG[*]!=1'  .. false
+-i 'TAG[0]=1'   .. true
+-i 'TAG[0]!=1'  .. false
+-e 'TAG[0]=1'   .. false
+-e 'TAG[0]!=1'  .. true
+
+
+Examples:
+
+MIN(DV)>5       .. selects the whole site, evaluates min across all values and samples
+SMPL_MIN(DV)>5  .. selects matching samples, evaluates within samples
+MIN(DV/DP)>0.3
+MIN(DP)>10 & MIN(DV)>3
+FMT/DP>10  & FMT/GQ>10 .. both conditions must be satisfied within one sample
+FMT/DP>10 && FMT/GQ>10 .. the conditions can be satisfied in different samples
+QUAL>10 |  FMT/GQ>10   .. true for sites with QUAL>10 or a sample with GQ>10, but selects only samples with GQ>10
+QUAL>10 || FMT/GQ>10   .. true for sites with QUAL>10 or a sample with GQ>10, plus selects all samples at such sites
+TYPE="snp" && QUAL>=10 && (DP4[2]+DP4[3] > 2)
+COUNT(GT="hom")=0      .. no homozygous genotypes at the site
+AVG(GQ)>50             .. average (arithmetic mean) of genotype qualities bigger than 50
+ID=@file       .. selects lines with ID present in the file
+ID!=@~/file    .. skip lines with ID present in the ~/file
+MAF[0]<0.05    .. select rare variants at 5% cutoff
+POS>=100   .. restrict your range query, e.g. 20:100-200 to strictly sites with POS in that range.
+
+Shell expansion:
+
+Note that expressions must often be quoted because some characters have special meaning in the shell. An example of expression enclosed in single quotes which cause that the whole expression is passed to the program as intended:
+
+bcftools view -i '%ID!="." & MAF[0]<0.01'
+Please refer to the documentation of your shell for details.
