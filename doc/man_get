@@ -1,5 +1,5 @@
 
-  vcfilter get [VCF] - v1.0.0
+  vcfilter get [VCF] - v1.0.1
 
  Given a vcf file, prints basic filterable (FILTER, INFO, and FORMAT) items. Redirect to file with > if desired.
 
