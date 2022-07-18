@@ -1,0 +1,14 @@
+
+  vcfilter [subcommand] - v1.0.0
+
+Small, extensible suite of VCF utilties focused on user-friendliness above all else.
+Try vcfilter [subcommand] help for further info.
+
+ SUBCOMMANDS
+
+            get - get filterable items from a VCF
+            
+            filter - filter one or more VCFs according to a config file
+            
+            expression - display expression reference for filtering config file
+    
