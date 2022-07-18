@@ -1,5 +1,5 @@
 
-  vcfriend filter [OPTIONS...] [FILTER_CONFIG] [VCF...]
+  vcfilter filter [OPTIONS...] [FILTER_CONFIG] [VCF...]
 
  Given one or more VCF files, filter on the expression provided by FILTER_CONFIG file.
  User-friendly wrapper around bcftools filter - for more advanced filtering needs go direct!
@@ -25,5 +25,5 @@ FILTER_CONFIG
             This file should contain a bcftools logical expression on a single line, and in single quotes, e.g.: 'CLPM=0 & DP>10'.
             The filter will then attempt to filter the provided VCFs by this logic, presuming the tokens used are present in the VCF header.
             For help on constructing appropriate filtering expressions see https://samtools.github.io/bcftools/howtos/filtering.html, or man bcftools.
-            To see available filterables for a given VCF, use vcfriend get.
+            To see available filterables for a given VCF, use vcfilter get.
     

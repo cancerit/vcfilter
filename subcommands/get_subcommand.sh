@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# CALLED BY VCFRIEND, NOT A STANDALONE SCRIPT
+# CALLED BY VCFilter, NOT A STANDALONE SCRIPT
 # "args" are passed in via parent script.
 
 get_usage() {
