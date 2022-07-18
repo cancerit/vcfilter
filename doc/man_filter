@@ -1,5 +1,5 @@
 
-  vcfilter filter [OPTIONS...] [FILTER_CONFIG] [VCF...] - v1.0.2
+  vcfilter filter [OPTIONS...] [FILTER_CONFIG] [VCF...] - v1.0.3
 
  Given one or more VCF files, filter on the expression provided by FILTER_CONFIG file.
  User-friendly wrapper around bcftools filter - for more advanced filtering needs go direct!
