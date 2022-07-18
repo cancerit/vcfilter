@@ -1,0 +1,17 @@
+#%Module
+set rootprog vcfilter
+set progver 1.0.2
+set installdir $rootprog/${rootprog}-${progver}
+set topdir /software/CGP/modules/installs/$installdir
+
+set helpcomm "Mods, path for vcfilter filtering module: $installdir"
+
+proc ModulesHelp { } {
+        global version modroot
+        puts stderr "$helpcomm"
+}
+
+module-whatis   "$helpcomm"
+
+module load bcftools/1.9 python/3.7.4
+prepend-path PATH $topdir
