@@ -18,6 +18,12 @@ filter_usage() {
 # "$args[0]" - first argument, n.b. not name of script since this is just an array not CLA
 # "${args[@]:1}" - contents of array offset by 1, i.e. missing the 0th element
 args_handler() {
+	if [[ ! "${args[@]}" ]] ; then
+		echo "no arguments provided, exiting" >&2
+		echo "for usage: vcfilter filter help" >&2
+		exit 1
+	fi
+	
 	while :; do
 		case "${args[0]}" in
 			-e)
@@ -72,6 +78,13 @@ args_handler() {
 				;;
 		esac
 	done
+	
+	# once flags are handled
+	if [ "${#args[@]}" -lt 2 ] ; then
+		echo "Error: not enough arguments - expecting a config file and at least one VCF" >&2
+		echo "for usage: vcfilter filter help" >&2
+		exit 1
+	fi
 	
 	if [ "$EXCLUDE" == "$INCLUDE" ] ; then
 		echo "Error: filtering must (-e)xclude or (-i)nclude, not both or neither" >&2
@@ -161,7 +174,7 @@ sub_filter() {
 		{ filter_engine || { echo "Error running bcftools" >&2; kill $$; }; } &
 		# continue without waiting for command to finish with & (which must come at end of line)
 		# i.e. parallelise filtering multiple VCFs
-		# because this line executes in parallel subshells, which are also run as background commands, executing a function.
+		# because this line executes in parallel subshells, which are also run as background commands, executing a function
 		# actually getting the script to exit on failure is really tricky because scoping/back-passing nightmares.
 		# hence "kill $$" - it works well in my testing
 	done
