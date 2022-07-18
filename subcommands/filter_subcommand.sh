@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# CALLED BY VCFRIEND, NOT A STANDALONE SCRIPT
+# CALLED BY VCFilter, NOT A STANDALONE SCRIPT
 # "args" are passed in via parent script.
 
 DEFAULTTAG="filter"
@@ -62,7 +62,7 @@ args_handler() {
 				;;
 			-*)
 				echo "Unrecognised flag: ${args[0]}" >&2
-				echo "for usage: vcfriend filter help " >&2
+				echo "for usage: vcfilter filter help " >&2
 				exit 1
 				;;
 			*)
@@ -75,7 +75,7 @@ args_handler() {
 	
 	if [ "$EXCLUDE" == "$INCLUDE" ] ; then
 		echo "Error: filtering must (-e)xclude or (-i)nclude, not both or neither" >&2
-		echo "for usage: vcfriend filter help " >&2
+		echo "for usage: vcfilter filter help " >&2
 		exit 1
 	fi
 	
