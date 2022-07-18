@@ -1,5 +1,5 @@
 
-  vcfilter [subcommand] - v1.0.1
+  vcfilter [subcommand] - v1.0.2
 
 Small, extensible suite of VCF utilties focused on user-friendliness above all else.
 Try vcfilter [subcommand] help for further info.
