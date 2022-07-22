@@ -1,6 +1,6 @@
 #!/bin/bash
 # author: Alex Byrne - ab63@sanger.ac.uk
-# version 1.0.2
+# version 1.0.4
 
 set -e
 
@@ -34,6 +34,9 @@ case $subcommand in
 		;;
 	help)
 		usage
+		;;
+	version)
+		echo "vcfilter version 1.0.4"
 		;;
 	*)
 		echo "Error: Unrecognised subcommand: $1" >&2
