@@ -1,4 +1,4 @@
-# VCFilter - v1.0.3
+# VCFilter - v1.0.4
 
 Simple filtering tool for VCF files
 
