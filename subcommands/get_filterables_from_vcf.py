@@ -34,12 +34,16 @@ if __name__ == "__main__":
 
     try:
         vr = vcfpy.Reader.from_path(args.vcf)
-        vh = vr.header
     except Exception as e:
         print(e)
         sys.exit('VCF file could not be read!')
+
+    try:
+        vh = vr.header
+        filts = get_filterables_from_head(vh)
+        print(filts)
+    except Exception as e:
+        print(e)
+        sys.exit('Error: could not get fiterables from VCF!')
     finally:
         vr.close()
-
-    filts = get_filterables_from_head(vh)
-    print(filts)

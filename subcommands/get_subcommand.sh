@@ -24,10 +24,7 @@ sub_get() {
 		get_usage
 	fi
 	
-	{ source "${0%/*}"/.env/bin/activate || source "${0%/*}"/.env/bin/activate.csh || source "${0%/*}"/.env/bin/activate.fish; } ||
-	{ echo "failed to activate venv"; exit 1; } # run in venv. One of these should work!\
-	
-	python "${0%/*}"/subcommands/get_filterables_from_vcf.py "${args[0]}"
+	"${0%/*}"/.env/bin/python "${0%/*}"/subcommands/get_filterables_from_vcf.py "${args[0]}"
 	
 	deactivate
 }
