@@ -28,14 +28,14 @@ python -m venv .env
 source .env/bin/activate
 pip install -r requirements.txt
 deactivate
-chmod +x ./vcfriend
+chmod +x ./vcfilter
 ```
 
 ### Usage
 
 ```
 module load python/3.7.4 bcftools/1.9
-./vcfriend help
+./vcfilter help
 ```
 A simple filter config example is present at `examples/bcf_conf.txt`
 
