@@ -32,9 +32,10 @@
 ###########################
 
 # author: Alex Byrne - ab63@sanger.ac.uk
-# version 1.0.4
 
 set -e
+
+VERSION="1.0.5"
 
 if ! which python &> /dev/null; then
     echo "Error: python not found on PATH."
@@ -92,7 +93,7 @@ case $subcommand in
 		usage
 		;;
 	version)
-		echo "vcfilter version 1.0.4"
+		echo "vcfilter version $VERSION"
 		;;
 	*)
 		echo "Error: Unrecognised subcommand: $1" >&2
